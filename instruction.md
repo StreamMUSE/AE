@@ -19,10 +19,10 @@ StreamMUSE: https://github.com/StreamMUSE/StreamMUSE
 eval: https://github.com/StreamMUSE/eval
 
 ```bash
-# StreamMUSE 主代码库（位于 AE/ 目录）
+# StreamMUSE 主代码库
 git clone <streammuse-repo-url>
 
-# 评估工具包（位于 eval/ 目录）
+# 评估工具包
 git clone <eval-repo-url>
 ```
 
