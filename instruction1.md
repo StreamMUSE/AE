@@ -38,6 +38,9 @@ This guide provides instructions for reproducing the experiments in the StreamMU
 - 16GB+ GPU memory recommended
 - Linux/macOS environment
 
+**Working Directory Convention:**
+Unless otherwise specified, all commands should be executed from the root directory (`AE/`). When a command block starts with `cd StreamMUSE` or `cd eval`, execute that command from the root directory, and subsequent commands in that block should be run from the respective subdirectory.
+
 ---
 
 ## Artifact #1: StreamMUSE
@@ -72,9 +75,7 @@ AE/
    ```bash
    pip install huggingface-hub
    mkdir -p StreamMUSE/ckpt
-   huggingface-cli download Jianshu001/music \
-       cp_transformer_909+ac+1k7_trackemb_interleavepos_v0.2_large_batch_40_schedule.epoch=00.val_loss=0.90296.ckpt \
-       --local-dir StreamMUSE/ckpt --local-dir-use-symlinks False
+   hf download Jianshu001/music cp_transformer_909+ac+1k7_trackemb_interleavepos_v0.2_large_batch_40_schedule.epoch=00.val_loss=0.90296.ckpt --local-dir StreamMUSE/ckpt
    ```
 
    In this example code, the target path is `StreamMUSE/ckpt`, you can replace this with any path you like.
