@@ -26,14 +26,31 @@ git clone <streammuse-repo-url>
 git clone <eval-repo-url>
 ```
 
+期望文件夹结构：
+```
+AE/
+├── StreamMUSE/           # StreamMUSE repo
+│   
+└── eval/                 # eval repo
+│   
+└── instruction.md
+
+```
+
 ### 2. 下载模型参数
 
-从 [Hugging Face](https://huggingface.co/Jianshu001/music/blob/main/cp_transformer_909%2Bac%2B1k7_trackemb_interleavepos_v0.2_large_batch_40_schedule.epoch%3D00.val_loss%3D0.90296.ckpt) 下载预训练模型：
+从 [Hugging Face](https://huggingface.co/Jianshu001/music) 下载预训练模型：
 
+**使用 huggingface-cli（推荐）**
 ```bash
+# 安装 huggingface-cli
+pip install huggingface-hub
+
 # 下载到 StreamMUSE/ckpt/ 或者任意你喜欢的路径
 mkdir -p StreamMUSE/ckpt
-wget https://huggingface.co/Jianshu001/music/blob/main/cp_transformer_909%2Bac%2B1k7_trackemb_interleavepos_v0.2_large_batch_40_schedule.epoch%3D00.val_loss%3D0.90296.ckpt -O AE/ckpt/model.ckpt
+
+# 下载模型文件
+huggingface-cli download Jianshu001/music cp_transformer_909+ac+1k7_trackemb_interleavepos_v0.2_large_batch_40_schedule.epoch=00.val_loss=0.90296.ckpt --local-dir StreamMUSE/ckpt --local-dir-use-symlinks False
 
 ```
 
@@ -51,6 +68,8 @@ input/
     ├── 002.mid
     └── ...
 ```
+**使用 StreamMUSE 自带测试数据**：为了方便测试，StreamMUSE 自带两个小的测试文件。可以用于快速跑通流程。
+
 
 **下载测试数据**：从 [Hugging Face](https://huggingface.co/datasets/S-tanley/formatted_dataset/tree/main/test64_top1) 下载数据集（格式已经处理好），同一个 repo 里还有很多其他处理好的数据集，但是本片论文用的测试数据是 test64_top1。
 
@@ -93,6 +112,11 @@ uv run real_time_experiment_runner.py \
     --generation-interval-ticks 2 \
     --generation-length-per-request 5
 ```
+> **注意**：为了确保文件生成到对应的地方，在这里你需要更改 StreamMUSE/app/client.py 中的一个参数：
+> 讲这个文件里第 1053 行代码，base_log_dir 最开始的文件名，和外面 <你希望保存的文件名> 对应上。
+> ![对应代码](img/code_example.png)
+> 如图，将 `experiments-AE5` 改成 <你希望保存的文件名>。
+
 
 > **注意**：输出目录的命名需要和你选择的参数匹配，格式为：
 > `interval_<生成间隔>_gen_frame_<每次请求长度>/prompt_<注入长度>_gen_<总生成长度>/`
