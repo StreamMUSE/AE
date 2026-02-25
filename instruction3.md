@@ -28,7 +28,7 @@
 
 This guide provides instructions for reproducing the experiments in the StreamMUSE paper. StreamMUSE is a real-time music accompaniment generation system that generates piano accompaniment given a live melody input. **For more details, please refer to our paper:**
 
-_B. Zheng, A. H. Yang, et al. Real-Time Language Model Jamming: A Case Study for Live Music Accompaniment Generation (pdf)_
+_B. Zheng, A. H. Yang, et al. Real-Time Language Model Jamming: A Case Study for Live Music Accompaniment Generation. ([PDF](paper/StreamMUSE.pdf))_
 
 **Workflow Summary:**
 
@@ -135,14 +135,14 @@ git clone https://github.com/StreamMUSE/eval.git
 All experiments follow the same pattern:
 
 1. Start the StreamMUSE server
-2. Run the specific client with specific parameters
+2. Run the specific client with specific parameters **of I and GL to evaluate the tradeoff between real-time responsiveness and music quality [这个地方得解释调整什么参数以及它们的意义]**
 3. Evaluate results using the eval toolkit or other evaluation codes.
 
 ---
 
 ### Reproducing Table X (Main Results)
 
-This section reproduces the main experimental results table with different generation intervals and frame sizes.
+This section reproduces the main experimental results table with different generation intervals and frame sizes. **Note that the following instructions reproduce the setting of local deployment, other settings (e.g., remote) could be reproduced in the similar way by deploying client and server in different devices and changing the IP address targeting to the server. [这个地方得说一下测的是local setting，其他的setting该怎么弄]**
 
 #### Quick Start (Test Workflow)
 
