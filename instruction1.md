@@ -248,12 +248,13 @@ python3 real_time_experiment_runner.py --dataset-dir input/mel --injection-lengt
 cd eval
 
 uv run evaluate_accompaniment_metrics.py \
-    --generated-dir /home/ubuntu/ugrip/stanleyz/AE/experiments-AE2/realtime/baseline/interval_2_gen_frame_5/prompt_128_gen_384/batch_run \
-    --groundtruth-dir /home/ubuntu/ugrip/stanleyz/AE/input/acc \
+    --generated-dir <your-experiment-folder-path>/realtime/baseline/interval_2_gen_frame_5/prompt_128_gen_384/generated \
+    --groundtruth-dir <your-experiment-folder-path>/realtime/baseline/interval_2_gen_frame_5/prompt_128_gen_384/gt-generation \
     --output-json results/interval2_gen5_metrics.json \
     --melody-track-names Guitar \
     --auto-phrase-analysis
 ```
+`generated-dir`, `groundtruth-dir` and `output-json` need to be alter to your corresponding path.
 
 **Batch Evaluation (Recommended):**
 ```bash
@@ -286,7 +287,7 @@ uv run compute_final_system_metric.py \
 
 **Output File Structure:**
 ```
-results-experiment2/final-sys-results/
+results-<experiment-results-folder>/final-sys-results/
 ├── interval_1_gen_frame_3.json
 ├── interval_2_gen_frame_5.json
 └── ...
