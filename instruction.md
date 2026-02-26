@@ -457,6 +457,18 @@ uv run add_nll_to_summary.py results-<experiment-results-folder>/ -o final_exper
 
 This figure corresponds to the **experiment fitting analysis** (generation length vs latency with fitted curves).
 
+> **Branch note for Fig. 3 & 4:** The instructions in this section assume you are using the dedicated benchmark branches:
+>
+> ```bash
+> cd StreamMUSE
+> git checkout ae-bench-integration
+>
+> cd ../eval
+> git checkout ae-bench-integration
+> ```
+>
+> You may reproduce Table 3 on the default branches, but for Fig. 3 and Fig. 4 we recommend using `ae-bench-integration` for both repositories.
+
 **Additional parameter context (for this figure):**
 
 - **Generation length (frames)**: The `generation_length_frames` values swept in the benchmark configs (1, 3, 5, …, 15). These appear on the x-axis of Fig. 3.
