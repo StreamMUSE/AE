@@ -30,6 +30,8 @@ This guide provides instructions for reproducing the experiments in the StreamMU
 
 _B. Zheng, A. H. Yang, et al. Real-Time Language Model Jamming: A Case Study for Live Music Accompaniment Generation. ([PDF](paper/StreamMUSE.pdf))_
 
+Find the latest version of guidance [here](https://github.com/StreamMUSE/AE).
+
 **Workflow Summary:**
 
 1. **Setup**: Clone repositories, download model checkpoint, prepare dataset
