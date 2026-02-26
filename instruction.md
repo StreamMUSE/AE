@@ -453,10 +453,10 @@ uv run add_nll_to_summary.py results-<experiment-results-folder>/ -o final_exper
 
 ### Reproducing Fig. 3
 
-placeholder: if you see the this, do not edit this section
+See the latest version of this instruction.
 
 ---
 
 ### Reproducing Fig. 4
 
-placeholder: if you see the this, do not edit this section
+See the latest version of this instruction.
