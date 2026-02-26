@@ -148,6 +148,8 @@ All experiments follow the same pattern:
 
 This section reproduces the main experimental results table with different generation intervals and frame sizes. **Note that there are three different setting of this experiment. If you are in the local-server/remote setting, remember to do the port forwarding step.**
 
+For the **real-time latency figures** in the paper (Fig. 3 and Fig. 4), we use a dedicated benchmark + analysis pipeline described in the sections [Reproducing Fig. 3](#reproducing-fig-3) and [Reproducing Fig. 4](#reproducing-fig-4) below.
+
 #### Quick Start (Test Workflow)
 
 ##### Start the Server
@@ -453,10 +455,101 @@ uv run add_nll_to_summary.py results-<experiment-results-folder>/ -o final_exper
 
 ### Reproducing Fig. 3
 
-See the latest version of this instruction.
+This figure corresponds to the **experiment fitting analysis** (generation length vs latency with fitted curves).
+
+**Additional parameter context (for this figure):**
+
+- **Generation length (frames)**: The `generation_length_frames` values swept in the benchmark configs (1, 3, 5, …, 15). These appear on the x-axis of Fig. 3.
+- **Round-trip time (ms)**: End-to-end latency for each request, from client send to response received. The quadratic formulas in the config approximate the mean round-trip time at each generation length (the y-axis of Fig. 3).
+
+**Real-time deployment settings (used in Fig. 3 & Fig. 4):**
+
+| Setting        | Description                                                                                           | Example experiment folder                       |
+| ------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `local`       | Client and server on the **same machine** (no network hop; measures pure model + runtime).           | `StreamMUSE/experiments/local_gl_test/`         |
+| `local_server`| Client and server on the **same local network** (e.g., PC client ↔ Mac server over LAN).             | `StreamMUSE/experiments/local_server_gl_test/`  |
+| `remote`      | Client on local machine, server on a **remote cloud GPU machine** (e.g., Hyperstack ↔ home PC).      | `StreamMUSE/experiments/remote_gl_test_new/`    |
+
+In practice, you may run all three settings on a single physical machine (for convenience). What matters for the analysis is that you produce **three separate experiment folders**, one per setting as above; the exact host/port you use is flexible as long as the client can reach the server.
+
+**Prerequisites:**
+
+- You will run three real-time benchmark experiments (one per deployment setting) using the provided YAML configs:
+  - `StreamMUSE/experiments/local_gl_test_config.yaml`        → writes to `StreamMUSE/experiments/local_gl_test/`
+  - `StreamMUSE/experiments/local_server_gl_test_config.yaml` → writes to `StreamMUSE/experiments/local_server_gl_test/`
+  - `StreamMUSE/experiments/remote_gl_test_new_config.yaml`   → writes to `StreamMUSE/experiments/remote_gl_test_new/`
+
+**Run the three benchmark sweeps (from `AE/` root):**
+
+```bash
+cd StreamMUSE
+
+# 1) Pure local (PC-PC)
+#    (client and server on the same machine; you can use the same URL as other settings if desired)
+uv run app/benchmarking/bulk_benchmark.py experiments/local_gl_test_config.yaml
+
+# 2) Local network (PC-Mac)
+#    (client and server on the same LAN; update server.url in the YAML if your server runs on another host)
+uv run app/benchmarking/bulk_benchmark.py experiments/local_server_gl_test_config.yaml
+
+# 3) Remote cloud (Hyperstack-PC)
+#    (client on your local machine, server on a remote/cloud machine; set server.url accordingly)
+uv run app/benchmarking/bulk_benchmark.py experiments/remote_gl_test_new_config.yaml
+```
+
+> **Note:** All three configs assume that the `server.url` field points to a running StreamMUSE server. For a simplified setup, you can run the server once (e.g., `http://0.0.0.0:8988/generate_accompaniment`) and set the same URL in all three YAML files; you will still obtain three distinct experiment folders corresponding to the three settings.
+
+Each command will create an `experiments/<setting>/` directory containing the generation-length sweep CSVs:
+
+- `StreamMUSE/experiments/local_gl_test/*.csv`
+- `StreamMUSE/experiments/local_server_gl_test/*.csv`
+- `StreamMUSE/experiments/remote_gl_test_new/*.csv`
+
+**Analysis step (from `AE/` root):**
+
+```bash
+cd eval
+
+# (Optional) Refit quadratic formulas for your own runs
+uv run -m src.benchmarks.fit_latency_formulas configs/analysis_config_fig3_fig4.yaml
+# Copy the printed formula blocks (a, b, c) back into configs/analysis_config_fig3_fig4.yaml
+
+# Then run YAML-configured bulk analysis for Fig. 3 & Fig. 4
+uv run -m src.benchmarks.yaml_bulk_analysis \
+    configs/analysis_config_fig3_fig4.yaml
+```
+
+**Key outputs (Fig. 3):**
+
+- `eval/results/benchmarks/fig3_fig4/plots/experiment_fitting_analysis.png`  
+  This is the **Fig. 3** plot (box plots overlaid with formula-based fitted lines and ±5% confidence bands).
+- `eval/results/benchmarks/fig3_fig4/yaml_analysis_summary.md`  
+  Summary of the experiments, formulas, and analysis settings.
 
 ---
 
 ### Reproducing Fig. 4
 
-See the latest version of this instruction.
+This figure corresponds to the **BPM-based parameter constraint analysis**.
+
+**Additional parameter context (for this figure):**
+
+- **BPM and τ (ms per tick)**: For each BPM in `constraint_analysis.bpm_list`, the analysis uses τ = 15000 / BPM (ms per tick) to convert musical time to milliseconds when checking real-time constraints.
+- **Percentile**: `constraint_analysis.percentile` (e.g., 99.5) specifies which latency percentile must satisfy the constraints for a configuration to be considered valid.
+
+Running the same command as in Fig. 3 (above) also generates Fig. 4 using the BPM and constraint settings in
+`eval/configs/analysis_config_fig3_fig4.yaml`.
+
+**Key outputs (Fig. 4):**
+
+- `eval/results/benchmarks/fig3_fig4/plots/parameter_constraint_analysis_bpm.png`  
+  This is the **Fig. 4** plot (constraint heatmaps across generation lengths and inference intervals, for multiple BPMs).
+- `eval/results/benchmarks/fig3_fig4/plots/constraint_analysis_*.png`  
+  Optional per-experiment constraint visualizations (supporting material, not directly shown in the paper).
+
+You can regenerate both Fig. 3 and Fig. 4 at any time by re-running:
+
+```bash
+cd eval
+uv run -m src.benchmarks.yaml_bulk_analysis configs/analysis_config_fig3_fig4.yaml
+```
