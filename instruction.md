@@ -4,7 +4,7 @@
 - [Artifact #1: StreamMUSE](#artifact-1-streammuse)
 - [Artifact #2: Eval Toolkit](#artifact-2-eval-toolkit)
 - [Reproducing our Experiments](#reproducing-our-experiments)
-  - [Reproducing Table X (Main Results)](#reproducing-table-x-main-results)
+  - [Reproducing Table 3 (Main Results)](#reproducing-table-3-main-results)
     - [Quick Start (Test Workflow)](#quick-start-test-workflow)
       - [Start the Server](#start-the-server)
       - [Run Client to Generate Accompaniment](#run-client-to-generate-accompaniment)
@@ -19,8 +19,8 @@
         - [3. Compute NLL (Model Likelihood)](#3-compute-nll-model-likelihood)
         - [4. Results Aggregation and Analysis](#4-results-aggregation-and-analysis)
       - [Detailed Parameter Reference](#detailed-parameter-reference)
-  - [Reproducing Figure X1](#reproducing-figure-x1)
-  - [Reproducing Figure X2](#reproducing-figure-x2)
+  - [Reproducing Figure 3](#reproducing-fig-3)
+  - [Reproducing Figure 4](#reproducing-fig-4)
 
 ---
 
@@ -135,14 +135,16 @@ git clone https://github.com/StreamMUSE/eval.git
 All experiments follow the same pattern:
 
 1. Start the StreamMUSE server
-2. Run the specific client with specific parameters **of I and GL to evaluate the tradeoff between real-time responsiveness and music quality [这个地方得解释调整什么参数以及它们的意义]**
+2. Run the specific client with specific parameters to evaluate the tradeoff between real-time responsiveness and music quality:
+   - **I (Inference Interval)**: `--generation-interval-ticks` controls how often the model generates new content (e.g., every 1, 2, 4, or 7 ticks). Smaller I means more frequent generation, better responsiveness but higher computational cost.
+   - **GL (Generation Length)**: `--generation-length-per-request` controls how many frames the model generates per request (e.g., 3, 5, 9, or 15 frames). Smaller GL reduces latency but may degrade music coherence.
 3. Evaluate results using the eval toolkit or other evaluation codes.
 
 ---
 
-### Reproducing Table X (Main Results)
+### Reproducing Table 3 (Main Results)
 
-This section reproduces the main experimental results table with different generation intervals and frame sizes. **Note that the following instructions reproduce the setting of local deployment, other settings (e.g., remote) could be reproduced in the similar way by deploying client and server in different devices and changing the IP address targeting to the server. [这个地方得说一下测的是local setting，其他的setting该怎么弄]**
+This section reproduces the main experimental results table with different generation intervals and frame sizes. **Note that there are three different setting of this experiment. If you are in the local-server/remote setting, remember to do the port forwarding step.**
 
 #### Quick Start (Test Workflow)
 
@@ -165,6 +167,27 @@ PYTHONPATH="$(pwd)" uv run -- uvicorn app.server:app --host 0.0.0.0 --port 8988
 - `CUDA_VISIBLE_DEVICES`: Only needed when you have multiple GPUs
 - `CHECKPOINT_PATH`: Model checkpoint path (be careful with escaping spaces)
 - `MODEL_MAX_SEQ_LEN_FRAMES`: Context window length
+
+##### Port Forwarding (for local-server/remote server deployment)
+
+If you deploy the server on a remote machine (e.g., a GPU server) and run the client locally, use SSH port forwarding to tunnel the server's port to your local machine.
+
+**Setup port forwarding:**
+
+```bash
+# On your local machine (client side)
+ssh -L 8988:localhost:8988 <remote-server-ip>
+```
+
+This forwards `localhost:8988` on your local machine to `localhost:8988` on the remote server.
+
+**Then in the client command, use localhost:**
+
+```bash
+--server-url http://localhost:8988/generate_accompaniment
+```
+
+> **Note:** Skip this section if both server and client run on the same machine (local setting).
 
 ##### Run Client to Generate Accompaniment
 
@@ -426,12 +449,12 @@ uv run add_nll_to_summary.py results-<experiment-results-folder>/ -o final_exper
 
 ---
 
-### Reproducing Figure X1
+### Reproducing Fig. 3
 
 placeholder: if you see the this, do not edit this section
 
 ---
 
-### Reproducing Figure X2
+### Reproducing Fig. 4
 
 placeholder: if you see the this, do not edit this section
