@@ -154,7 +154,7 @@ This section reproduces the main experimental results table with different gener
 cd StreamMUSE
 
 # Set environment variables
-export CUDA_VISIBLE_DEVICES=1  # Specify GPU (needed in multi-GPU environments)
+export CUDA_VISIBLE_DEVICES=<GPU_ID>  # Specify GPU (only needed in multi-GPU environments)
 export CHECKPOINT_PATH=<your-model-path>
 export MODEL_MAX_SEQ_LEN_FRAMES=384  # Model window length (frames)
 
